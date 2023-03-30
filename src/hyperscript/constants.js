@@ -3,7 +3,9 @@ export const TEXT_NODE = 'TEXT_NODE';
 export const VALID_HYPERSCRIPT_TYPES = [
 	'div',
 	'p', 
-	'section', 
+	'section',
+	'input',
+	'search',
 	'ul', 
 	'li', 
 	'h1', 

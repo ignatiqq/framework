@@ -14,6 +14,8 @@ export function createSignal(initialValue) {
 	function getValue() {
 		const contextExecutor = getRunnningExecutor();
 
+		console.log({state, contextExecutor});
+
 		if(contextExecutor) {
 			_observers.add(contextExecutor);
 			contextExecutor._observables.add(_observers);
@@ -29,7 +31,7 @@ export function createSignal(initialValue) {
 		}
 
 		if(!isFunction(nextVal)) {
-			state = state + nextVal;
+			state = nextVal;
 		}
 
 		if(_observers.size > 0) {
@@ -39,6 +41,10 @@ export function createSignal(initialValue) {
 			}
 		}
 	}
+
+	// mark function's as signals
+	getValue.$signal = 'get';
+	setValue.$signal = 'set';
 
 	return [getValue, setValue];
 }
