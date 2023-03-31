@@ -1,6 +1,6 @@
-import { TEXT_NODE } from '../hyperscript/constants.js';
-import { isFunction } from '../utils/index.js';
-import {property} from './property.js';
+import { TEXT_NODE } from '../hyperscript/constants';
+import { isFunction } from '../utils/index';
+import {property} from './property';
 
 export function render(root, h) {
 	if(!root) {
@@ -23,7 +23,7 @@ export function render(root, h) {
 		});
 	}
 
-	if(h.props.children.length) {
+	if(h.props.children && h.props.children.length) {
 		h.props.children.forEach((child) => {
 			render(element, child);
 		});

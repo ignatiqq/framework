@@ -1,5 +1,5 @@
-import { isFunction, isObject } from '../utils/index.js';
-import { TEXT_NODE, VALID_HYPERSCRIPT_TYPES } from './constants.js';
+import { isFunction, isObject } from '../utils/index';
+import { TEXT_NODE, VALID_HYPERSCRIPT_TYPES } from './constants';
 
 export function h(type, props, ...children) {
 	validateTagType(type);

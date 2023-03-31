@@ -1,9 +1,14 @@
-import { createEffect } from '../signals/signals.js';
-import { isFunction } from '../utils/index.js';
+import { createEffect, onCleanup } from '../signals/signals';
+import { isFunction } from '../utils/index';
+import { render } from './render';
 
 export function property(element, name, prop, isCss = false) {
 	if(isFunction(prop)) {
 		if(prop.$signal) {
+			// добавить сравнения и ануманты и маунты функций и тд
+			// оптимизация этого кодана дестрой и тд
+			// например раньше показывался, потом не показывается
+			// добавить компонент жизненного цикла
 			createEffect(() => {
 				// initialize effect for property (signal) change
 				// after any signal "set" any state
@@ -11,10 +16,22 @@ export function property(element, name, prop, isCss = false) {
 				const propVal = prop();
 				console.log({element, name, propVal, isCss});
 				property(element, name, propVal, isCss);
+
+				// можно удалить все функции здесь, например
+				// onCleanup(() => {
+                    
+				// });
 			});
-		} else {
+		} else if(isFunctionHandler(name)){
 			handleEvent(name, element, prop);
+		} else {
+			createEffect(() => {
+				console.log('PROPERY EFFECT: ', {element, name, prop: prop(), isCss});
+				property(element, name, prop(), isCss);
+			});
 		}
+	} else if(Array.isArray(prop)) {
+		console.log('IS ARRAY: ', {prop});
 	} else if(isAttribute(name)) {
 		element.setAttribute(name, prop);
 	} else if(isCss) {
@@ -34,6 +51,10 @@ export function property(element, name, prop, isCss = false) {
 	} else {
 		element[name] = prop;
 	}
+}
+
+function isFunctionHandler(name) {
+	return (name[0] === name[1]) && (name[1].toLowerCase !== name[1]);
 }
 
 function handleEvent(name, element, fn) {

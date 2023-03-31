@@ -1,8 +1,7 @@
-import { TEXT_NODE } from '../../src/hyperscript/constants.js';
-import framework from '../../src/index.js';
-import { createSignal } from '../../src/signals/signals.js';
+import { TEXT_NODE } from '../../src/hyperscript/constants';
+import framework from '../../src/index';
+import { createEffect, createSignal } from '../../src/signals/signals';
 
-// const el = <div id="123" onClick={() => console.log("123")}><p>Hello world</p></div>;
 
 
 // const el = framework.h('div', {id: '123', onClick: () => console.log("123")}, 
@@ -28,11 +27,47 @@ import { createSignal } from '../../src/signals/signals.js';
 // createEffect(() => root.append(view()));
 // }
 
-const [value, setValue] = createSignal('hello wolrd');
+/** @jsx framework.h */
+
+const Component = () => {
+	const [value, setValue] = createSignal([]);
+
+	createEffect(() => {
+		fetch('https://jsonplaceholder.typicode.com/todos/1')
+			.then(response => response.json())
+			.then(json => {
+				setValue([...value(), json]);
+			});
+	});
+
+	// try to implement query users and easy view
+
+	const titleCard = (user) => <h1>{user.title}</h1>; 
+
+	createEffect(() => {
+		console.log('check log: ', value());
+	});
+
+	const renderUsers = () => {
+		return value().length > 0 ? <div>{value().map(titleCard)}</div> : 'no users found';
+	};
+
+	return (
+		<div>
+			<h1 className="hello">Hello world 123</h1>
+			<p style="color: red">It's very simple counter frameword signals example</p>
+			<div id="map">Count: {renderUsers}</div>
+			{/* <button onClick={() => setValue((prev) => prev + 1)}>increment</button>
+			<button onClick={() => setValue((prev) => prev - 1)}>decrement</button> */}
+		</div>
+	);
+};
 
 
 window.addEventListener('DOMContentLoaded', () => {
 	const root = document.querySelector('#root');
+	console.log({framework, root});
+	framework.render(root, <Component />);
 	// createEffect(() => {
 	// const interval = setInterval(() => console.log('will clear every time: ', value()), 1000);
 	// console.log('new effect val: ', interval, 'value : ', value());
@@ -40,12 +75,12 @@ window.addEventListener('DOMContentLoaded', () => {
 	// });
 	// createEffect(() => {
 	// 	console.log('effect');
-	framework.render(root, framework.h('div', {id: '123', onClick: () => console.log('123')}, 
-		framework.h('p', {className: 'p-class'}, framework.h(TEXT_NODE, {
-			nodeValue: value,
-		})),
-		framework.h('input', {onInput: (e) => setValue(e.target.value), value: value})
-	));
+	// framework.render(root, framework.h('div', {id: '123', onClick: () => console.log('123')}, 
+	// 	framework.h('p', {className: 'p-class'}, framework.h(TEXT_NODE, {
+	// 		nodeValue: value,
+	// 	})),
+	// 	framework.h('input', {onInput: (e) => setValue(e.target.value), value: value})
+	// ));
 
 
 	// });

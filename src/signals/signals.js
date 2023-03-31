@@ -1,5 +1,5 @@
-import { isFunction } from '../utils/index.js';
-import Executor from './Executor.js';
+import { isFunction } from '../utils/index';
+import Executor from './Executor';
 
 let context = [];
 
