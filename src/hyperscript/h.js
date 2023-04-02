@@ -9,7 +9,8 @@ export function h(type, props, ...children) {
 		props: {
 			...props,
 			children: children.map(child => {
-				return isObject(child) ? child : textNode(child);
+				// check is function
+				return isObject(child) ? child : createTextNode(child);
 			}),
 		}
 	};
@@ -21,7 +22,16 @@ function validateTagType(type) {
 	}
 }
 
-export function textNode(text) {
+// /**
+//  * Used for inline function's which return jsx (components)
+//  * @example:
+//  * <div>{renderUsers}</div>
+//  */
+// export function createFunctionalComponent() {
+
+// }
+
+export function createTextNode(text) {
 	return {
 		type: TEXT_NODE,
 		props: {

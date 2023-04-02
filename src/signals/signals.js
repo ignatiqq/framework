@@ -14,8 +14,6 @@ export function createSignal(initialValue) {
 	function getValue() {
 		const contextExecutor = getRunnningExecutor();
 
-		console.log({state, contextExecutor});
-
 		if(contextExecutor) {
 			_observers.add(contextExecutor);
 			contextExecutor._observables.add(_observers);
@@ -52,6 +50,10 @@ export function createSignal(initialValue) {
 export function createEffect(fn) {
 	const executor = new Executor(context, fn);
 	executor.execute();
+}
+
+export function subscribe(fn) {
+	createEffect(fn);
 }
 
 export function onCleanup(fn) {

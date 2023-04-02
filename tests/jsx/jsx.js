@@ -27,7 +27,14 @@ import { createEffect, createSignal } from '../../src/signals/signals';
 // createEffect(() => root.append(view()));
 // }
 
+
 /** @jsx framework.h */
+
+const AnotherComponent = () => {
+	console.log('Anothercomnponent');
+
+	return (<h1>Another Component</h1>);
+};
 
 const Component = () => {
 	const [value, setValue] = createSignal([]);
@@ -49,14 +56,19 @@ const Component = () => {
 	});
 
 	const renderUsers = () => {
+		console.log('renderUSERS VALUE: ', value().map(titleCard));
 		return value().length > 0 ? <div>{value().map(titleCard)}</div> : 'no users found';
 	};
+	console.log('Component RERENDER');
 
 	return (
 		<div>
 			<h1 className="hello">Hello world 123</h1>
 			<p style="color: red">It's very simple counter frameword signals example</p>
+			<AnotherComponent />
+            
 			<div id="map">Count: {renderUsers}</div>
+			{/* <section>For test: {value}</section> */}
 			{/* <button onClick={() => setValue((prev) => prev + 1)}>increment</button>
 			<button onClick={() => setValue((prev) => prev - 1)}>decrement</button> */}
 		</div>
@@ -67,6 +79,7 @@ const Component = () => {
 window.addEventListener('DOMContentLoaded', () => {
 	const root = document.querySelector('#root');
 	console.log({framework, root});
+	console.log(<Component />);
 	framework.render(root, <Component />);
 	// createEffect(() => {
 	// const interval = setInterval(() => console.log('will clear every time: ', value()), 1000);

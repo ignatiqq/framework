@@ -1,34 +1,58 @@
 import { TEXT_NODE } from '../hyperscript/constants';
+import { subscribe } from '../signals/signals';
 import { isFunction } from '../utils/index';
 import {property} from './property';
 
+// @TODO add requestIdleCallback to do work without ui stuck
+
 export function render(root, h) {
 	if(!root) {
-		if(process.env === 'development') throw new Error('Root is not valid selector'); 
-		return null;
+		if(process.env === 'development') throw new Error(`Root ${root} is not valid element`); 
+		return;
 	}
 
-	if(isFunction(h.type)) {
-		h = h.type(h.props);
-	}
+	let element;
 
-	const element = h.type === TEXT_NODE ?
-		document.createTextNode('') : 
-		document.createElement(h.type);
+	if(h.type) {
+		
+		if(h.type === TEXT_NODE) {
+			element = document.createTextNode('');
+		} else if (isFunction(h.type)) {
+			subscribe(function insert() {
+				console.log('AFTER FC: ', h.type(), {root});
+				render(root, h.type());
+			});
+		} else {
+			element = document.createElement(h.type);
+		}
+
+	} else if(isFunction(h)) {
+		console.log('isFunction (h) not type');
+		// subscribe to rerender on signal dependencies change (update)
+		// subscribe(function insert() {
+		// 	render(root, h.type());
+		// });
+	}
 
 	if(h.props) {
-		const propsWithoutChildren = Object.keys(h.props).filter(prop => prop !== 'children');
-		propsWithoutChildren.forEach((name) => {
-			property(element, name, h.props[name]);
-		});
+		setPropertiesToElement(element, h.props);
 	}
 
 	if(h.props.children && h.props.children.length) {
 		h.props.children.forEach((child) => {
 			render(element, child);
 		});
-		root.append(element);
-	} else {
-		root.append(element);
 	}
+
+	// add every element to current root
+	root.append(element);
+}
+
+function setPropertiesToElement(element, props) {
+	// remove children property
+	const propsWithoutChildren = Object.keys(props).filter(prop => prop !== 'children');
+
+	propsWithoutChildren.forEach((name) => {
+		property(element, name, props[name]);
+	});
 }

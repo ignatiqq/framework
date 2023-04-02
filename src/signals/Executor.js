@@ -80,7 +80,6 @@ class Executor {
 			// }
 			console.error(error);
 		} finally {
-			console.log('FINALLY');
 			this._context.pop();
 		}
 	}

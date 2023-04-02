@@ -1,21 +1,20 @@
-import { createEffect, onCleanup } from '../signals/signals';
+import { subscribe } from '../signals/signals';
 import { isFunction } from '../utils/index';
-import { render } from './render';
 
 export function property(element, name, prop, isCss = false) {
 	if(isFunction(prop)) {
+		console.log({fnProp: prop, isSignal: prop.$signal});
 		if(prop.$signal) {
 			// добавить сравнения и ануманты и маунты функций и тд
 			// оптимизация этого кодана дестрой и тд
 			// например раньше показывался, потом не показывается
 			// добавить компонент жизненного цикла
-			createEffect(() => {
+			subscribe(function setProperty() {
 				// initialize effect for property (signal) change
 				// after any signal "set" any state
 				// it will trigger update property to dom element
-				const propVal = prop();
-				console.log({element, name, propVal, isCss});
-				property(element, name, propVal, isCss);
+				console.log({element, name, propVal: prop(), isCss});
+				property(element, name, prop(), isCss);
 
 				// можно удалить все функции здесь, например
 				// onCleanup(() => {
@@ -25,7 +24,7 @@ export function property(element, name, prop, isCss = false) {
 		} else if(isFunctionHandler(name)){
 			handleEvent(name, element, prop);
 		} else {
-			createEffect(() => {
+			subscribe(() => {
 				console.log('PROPERY EFFECT: ', {element, name, prop: prop(), isCss});
 				property(element, name, prop(), isCss);
 			});

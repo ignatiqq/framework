@@ -1,7 +1,7 @@
 export function isObject(el) {
-    return typeof el === 'object' && !Array.isArray(el) && el !== null;
+	return typeof el === 'object' && !Array.isArray(el) && el !== null;
 }
 
 export function isFunction(el) {
-    return typeof el === 'function';
+	return typeof el === 'function';
 }
