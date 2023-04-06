@@ -9,8 +9,10 @@ export function h(type, props, ...children) {
 		props: {
 			...props,
 			children: children.map(child => {
-				// check is function
-				return isObject(child) ? child : createTextNode(child);
+				if(isObject(child)) return child;
+				else if (isFunction(child)) return createFunctionalNode(child);
+				else if (typeof child === 'string') return createTextNode(child);
+				return child;
 			}),
 		}
 	};
@@ -27,9 +29,14 @@ function validateTagType(type) {
 //  * @example:
 //  * <div>{renderUsers}</div>
 //  */
-// export function createFunctionalComponent() {
-
-// }
+export function createFunctionalNode(fn) {
+	return {
+		$inlineSignal: true,
+		type: fn,
+		props: {},
+		children: [],
+	};
+}
 
 export function createTextNode(text) {
 	return {

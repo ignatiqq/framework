@@ -1,3 +1,4 @@
+import React from 'react';
 import { TEXT_NODE } from '../../src/hyperscript/constants';
 import framework from '../../src/index';
 import { createEffect, createSignal } from '../../src/signals/signals';
@@ -11,7 +12,7 @@ import { createEffect, createSignal } from '../../src/signals/signals';
 // )
 
 
-// /** @jsx framework.h */
+/** @jsx framework.h */
 // function FunctionComponent({hello}, root) {
 // 	console.log({hello});
 
@@ -28,45 +29,45 @@ import { createEffect, createSignal } from '../../src/signals/signals';
 // }
 
 
-/** @jsx framework.h */
-
-const AnotherComponent = () => {
+const AnotherComponent = (props) => {
 	console.log('Anothercomnponent');
 
 	return (<h1>Another Component</h1>);
 };
 
-const Component = () => {
+const Component = (props) => {
 	const [value, setValue] = createSignal([]);
 
 	createEffect(() => {
-		fetch('https://jsonplaceholder.typicode.com/todos/1')
+		fetch('https://jsonplaceholder.typicode.com/todos')
 			.then(response => response.json())
 			.then(json => {
-				setValue([...value(), json]);
+				setValue([...value(), ...json]);
 			});
 	});
 
 	// try to implement query users and easy view
 
-	const titleCard = (user) => <h1>{user.title}</h1>; 
+	const titleCard = (user) => {
+		console.log({user});
+		return <h1>{user.title}</h1>;
+	}; 
 
 	createEffect(() => {
 		console.log('check log: ', value());
 	});
 
 	const renderUsers = () => {
-		console.log('renderUSERS VALUE: ', value().map(titleCard));
-		return value().length > 0 ? <div>{value().map(titleCard)}</div> : 'no users found';
+		console.log('renderUSERS VALUE: ', {value: value()}, value().map(titleCard));
+		return value().length > 0 ? <div>{() => value().map(titleCard)}</div> : 'no users found';
 	};
-	console.log('Component RERENDER');
 
 	return (
 		<div>
-			<h1 className="hello">Hello world 123</h1>
-			<p style="color: red">It's very simple counter frameword signals example</p>
-			<AnotherComponent />
-            
+			{/* <h1 className="hello">Hello world</h1>
+			<p style="color: red">It's very simple counter frameword signals example</p> */}
+			{/* <AnotherComponent /> */}
+			<AnotherComponent another='test' />
 			<div id="map">Count: {renderUsers}</div>
 			{/* <section>For test: {value}</section> */}
 			{/* <button onClick={() => setValue((prev) => prev + 1)}>increment</button>
@@ -78,9 +79,8 @@ const Component = () => {
 
 window.addEventListener('DOMContentLoaded', () => {
 	const root = document.querySelector('#root');
-	console.log({framework, root});
-	console.log(<Component />);
-	framework.render(root, <Component />);
+	console.log(<Component hello="world"  />);
+	framework.render(root, <Component hello="world" />);
 	// createEffect(() => {
 	// const interval = setInterval(() => console.log('will clear every time: ', value()), 1000);
 	// console.log('new effect val: ', interval, 'value : ', value());

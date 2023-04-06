@@ -1,4 +1,5 @@
 export const TEXT_NODE = 'TEXT_NODE';
+export const FUNCTIONAL_COMPONENT = 'FUNCTIONAL_COMPONENT';
 
 export const VALID_HYPERSCRIPT_TYPES = [
 	'div',
